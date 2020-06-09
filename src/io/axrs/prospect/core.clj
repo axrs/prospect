@@ -3,6 +3,8 @@
   (:import
     (clojure.lang Namespace)))
 
+(def ^:dynamic *exit-on-not-found* true)
+
 (defn print-synopsis [fns]
   (println "SYNOPSIS")
   (doseq [{:keys [name arglists] :as fn} fns]
@@ -51,4 +53,7 @@
                         (filter (comp (partial = f-sym) :name))
                         first))
       (apply (resolve f-sym) args)
-      (print-help publics))))
+      (do
+        (print-help publics)
+        (when *exit-on-not-found*
+          (System/exit 1))))))
