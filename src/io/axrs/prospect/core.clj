@@ -13,13 +13,15 @@
 
 (defn print-description [fns]
   (println "DESCRIPTION")
-  (doseq [{:keys [name arglists] :as fn} fns]
+  (doseq [{:keys [name doc arglists] :as fn} fns]
     (print \tab name)
     (when (seq (first arglists))
       (print \space (str/join \space arglists)))
     (print \newline)
-    (println \tab \tab (:doc fn))
+    (when doc
+      (println \tab \tab doc))
     (doseq [arg (distinct (flatten arglists))]
+
       (when-let [doc (:doc (meta arg))]
         (print \tab \tab \tab arg "-" doc \newline)))
     (print \newline)))
@@ -48,4 +50,5 @@
     (if (and f-sym (->> publics
                         (filter (comp (partial = f-sym) :name))
                         first))
-      (apply (resolve f-sym) args))))
+      (apply (resolve f-sym) args)
+      (print-help publics))))
