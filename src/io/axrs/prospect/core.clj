@@ -56,4 +56,5 @@
       (do
         (print-help publics)
         (when *exit-on-not-found*
+          (shutdown-agents)
           (System/exit 1))))))
